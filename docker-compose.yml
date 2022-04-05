@@ -1,0 +1,52 @@
+version: "3"
+services:
+  web_testjenkins:
+    build:
+      context: .
+      args:
+        USER_ID: "${USER_ID:-1000}"
+        GROUP_ID: "${GROUP_ID:-1000}"
+    ports:
+      - "3900:3000"
+    volumes: 
+      - ./testjenkins:/opt/app
+      - gem_cache_testjenkins:/gems
+    env_file: 
+      - .env/development/database_testjenkins
+      - .env/development/web_testjenkins
+    environment: 
+      - WEBPACKER_DEV_SERVER_HOST=webpack_dev_server_testjenkins
+    networks:
+      - network
+  webpack_dev_server_testjenkins:
+    build:
+      context: .
+      args:
+        USER_ID: "${USER_ID:-1000}"
+        GROUP_ID: "${GROUP_ID:-1000}"
+    command: ./bin/webpack-dev-server
+    ports: 
+      - "4900:4900"
+    volumes: 
+      - ./testjenkins:/opt/app
+      - gem_cache_testjenkins:/gems
+    env_file: 
+      - .env/development/database_testjenkins
+      - .env/development/web_testjenkins
+    environment: 
+      - WEBPACKER_DEV_SERVER_HOST=0.0.0.0
+    networks:
+      - network
+  database_testjenkins:
+    image: postgres
+    env_file: 
+      - .env/development/database_testjenkins
+    volumes: 
+      - db_data_testjenkins:/var/lib/postgresql/data
+    networks:
+      - network
+volumes: 
+  db_data_testjenkins:
+  gem_cache_testjenkins:
+networks:
+  network:

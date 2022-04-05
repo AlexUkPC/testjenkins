@@ -1,0 +1,39 @@
+version: "3" 
+services:
+  web_testjenkins:
+    image: alexrogna/testjenkins_web:prod
+    expose:
+      - 3000
+    env_file:
+      - .env/production/database_testjenkins
+      - .env/production/web_testjenkins
+    environment:
+      - VIRTUAL_HOST=testjenkins.alexrogna.com
+      - VIRTUAL_PORT=3000
+      - LETSENCRYPT_HOST=testjenkins.alexrogna.com
+    networks:
+      - proxy
+    restart: always
+
+  database_testjenkins:
+    image: postgres
+    env_file:
+      - .env/production/database_testjenkins
+    volumes:
+      - db_data_testjenkins:/var/lib/postgresql/data
+    networks:
+      - proxy
+    restart: always
+    
+  db-migrator_testjenkins:
+    image: alexrogna/testjenkins_web:prod
+    command: ["./wait-for", "--timeout=300", "database_testjenkins:5432", "--", "bin/rails", "db:create" , "db:migrate"]
+    env_file:
+      - .env/production/database_testjenkins
+      - .env/production/web_testjenkins
+    networks:
+      - proxy
+volumes:
+  db_data_testjenkins:
+networks:
+  proxy:
