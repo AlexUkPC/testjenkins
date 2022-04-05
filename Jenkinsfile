@@ -9,6 +9,7 @@ pipeline {
         stage('Bundle Install') {
             steps {
                 sh '/usr/local/bin/docker-compose run --rm web_testjenkins bundle install'
+                sh '/usr/local/bin/docker-compose run --rm web_testjenkins gem install nokogiri --platform=ruby'
             }
         }
         stage('Webpacker Install') {
