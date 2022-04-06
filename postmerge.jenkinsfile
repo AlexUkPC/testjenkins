@@ -10,7 +10,7 @@ pipeline {
         stage('Get next version') {
             agent {
                 dockerfile {
-                    label 'docker'
+                    label 'ssh'
                     filename 'git.dockerfile'
                 }
             }
