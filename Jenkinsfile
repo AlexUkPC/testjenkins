@@ -13,7 +13,7 @@ pipeline {
         }
         stage('Webpacker Install') {
             steps {
-                sh '/usr/local/bin/docker-compose run --rm web_testjenkins gem install nokogiri --platform=ruby; bin/rails webpacker:install'
+                sh '/usr/local/bin/docker-compose run --rm web_testjenkins bash -c "gem install nokogiri --platform=ruby && bin/bundle config set force_ruby_platform true && bin/rails webpacker:install"'
             }
         }
         stage('Stop old containers') {
