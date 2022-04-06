@@ -18,7 +18,6 @@ COPY /testjenkins/Gemfile* $INSTALL_PATH
 WORKDIR $INSTALL_PATH
 ENV BUNDLE_PATH /gems
 
-RUN gem install nokogiri --platform=ruby
 RUN bundle install
 COPY testjenkins/ $INSTALL_PATH
 
